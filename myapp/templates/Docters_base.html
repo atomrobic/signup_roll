@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin Panel{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Sidebar -->
+  <div class="flex">
+    <div class="flex-shrink-0 w-64 bg-blue-800 text-white h-screen p-4">
+      <h2 class="text-2xl font-semibold mb-6">Admin Panel</h2>
+      <ul>
+        <li><a href="{% url 'dashboard' %}" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a></li>
+        <li><a href="{% url 'approve_doctors' %}" class="block py-2 px-4 hover:bg-blue-700 rounded">Approve Doctors</a></li>
+        <li><a href="{% url 'appointments' %}" class="block py-2 px-4 hover:bg-blue-700 rounded">Manage Appointments</a></li>
+        <li><a href="{% url 'settings' %}" class="block py-2 px-4 hover:bg-blue-700 rounded">Settings</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Navbar -->
+      <nav class="bg-blue-800 text-white p-4 flex justify-between items-center">
+        <div class="text-xl font-semibold">Admin Dashboard</div>
+        <div>
+          <button class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded">Log Out</button>
+        </div>
+      </nav>
+
+      <!-- Main Section -->
+      <div class="flex-1 p-8">
+        {% block content %}
+        <!-- Dynamic content will be injected here -->
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

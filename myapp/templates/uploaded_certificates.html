@@ -1,0 +1,91 @@
+{% extends 'Docters_base.html' %}
+
+{% block title %}Doctor Applications{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="title">Upload Certificate</h2>
+        
+        <!-- Upload Form -->
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-btn">Upload Certificate</button>
+        </form>
+
+        <h2 class="title">Uploaded Certificates</h2>
+
+        <!-- Certificates List -->
+        <ul>
+            {% for application in applications %}
+                <li>
+                    {{ application.doctor_name }} - 
+                    <a href="{{ application.document.url }}" target="_blank">View Document</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block extra_styles %}
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .upload-form {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .uploaded-certificates {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .uploaded-certificates li {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .uploaded-certificates a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .uploaded-certificates a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
