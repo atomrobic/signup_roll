@@ -1,0 +1,10 @@
+<form action="{% url 'update-status' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Send Email</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}

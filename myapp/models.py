@@ -75,6 +75,7 @@ class Doctor(models.Model):
     specification = models.TextField()
     experience = models.PositiveIntegerField(help_text="Number of years of experience")
     certificate_files = models.FileField(upload_to='certificates/', blank=True, null=True)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Doctor: {self.user.first_name} {self.user.last_name}"

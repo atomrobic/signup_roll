@@ -6,49 +6,102 @@
     <div class="max-w-7xl mx-auto py-8 px-4">
         <h1 class="text-3xl font-semibold text-center mb-8">Doctor Applications</h1>
 
-        <!-- Upload Form -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-semibold mb-4">Upload Doctor Certificate</h2>
-            <form method="POST" enctype="multipart/form-data" class="space-y-4">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                    Upload Certificate
-                </button>
-            </form>
-        </div>
-
         <!-- Doctor Applications Table -->
-        <table class="min-w-full table-auto bg-white border border-gray-200 rounded-lg shadow-md">
-            <thead class="bg-gray-100 text-gray-700">
-                <tr>
-                    <th class="px-6 py-3 text-left text-sm font-medium">Name</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium">Specialization</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium">Experience</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium">Document</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                certificate_file 
-                {% for application in applications %}
-                    <tr class="border-t hover:bg-gray-50">
-                        <td class="px-6 py-4 text-sm text-gray-700">{{ application.user_type }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">{{ application.specialization }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">{{ application.experience }} years</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">{{ application.certificate_file  }} years</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">
-                            <span class="px-3 py-1 rounded-full text-white 
-                                {% if application.status == 'Pending' %} bg-yellow-500
-                                {% elif application.status == 'Approved' %} bg-green-500
-                                {% else %} bg-red-500 {% endif %}">
-                                {{ application.status }}
-                            </span>
-                        </td>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-medium">Doctor</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium">Specialization</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium">Experience</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium">Document</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for application in doctor_applications %}
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ application.user }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ application.specification }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ application.experience }} years</td>
+                            <td class="px-6 py-4">
+                                <!-- Custom Button for Modal -->
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-lg" data-modal-toggle="viewCertificateModal-{{ application.id }}">
+                                    Manage
+                                </button>
+                            </td>
+                            <td class="px-6 py-4 space-y-2">
+                                <!-- Approve Button -->
+                                <form method="POST" action="{% url 'update_status' application.id 'Approved' %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-full md:w-auto">
+                                        Approve
+                                    </button>
+                                </form>
+                                <!-- Reject Button -->
+                                <form method="POST" action="{% url 'update_status' application.id 'Rejected' %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg w-full md:w-auto">
+                                        Reject
+                                    </button>
+                                </form>
+                            </td>
+                            
+
+                        <!-- Modal for Viewing Certificate -->
+                        <div id="viewCertificateModal-{{ application.id }}" class="fixed inset-0 flex items-center justify-center z-20 hidden">
+                            <div class="bg-gray-800 bg-opacity-50 absolute inset-0"></div>
+                            <div class="bg-white p-2 rounded-lg shadow-md relative">
+                                <h2 class="text-lg font-semibold text-gray-700 mb-4">Document Details</h2>
+                                
+                                <!-- Display the Document -->
+                                
+                                <!-- Document URL Section -->
+                                <!-- View and Download Links -->
+<div class="mt-4 flex justify-end space-x-4">
+    <a href="{{ application.certificate_files.url }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+        View & Download
+    </a>
+</div>
+
+                                <div class="mt-4 flex justify-end space-x-4">
+                                    <!-- Download Button -->
+                                 
+                                    <!-- Close Modal Button -->
+                                    <button onclick="closeModal('{{ application.id }}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <!-- Modal Toggle Script -->
+    <script>
+        // Open Modal Function
+        function openModal(applicationId) {
+            const modal = document.getElementById('viewCertificateModal-' + applicationId);
+            modal.classList.remove('hidden');
+        }
+
+        // Close Modal Function
+        function closeModal(applicationId) {
+            const modal = document.getElementById('viewCertificateModal-' + applicationId);
+            modal.classList.add('hidden');
+        }
+
+        // Attach event listeners to buttons with modal toggle functionality
+        document.querySelectorAll('[data-modal-toggle]').forEach(button => {
+            button.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal-toggle');
+                const modal = document.getElementById(modalId);
+                modal.classList.toggle('hidden');
+            });
+        });
+    </script>
 {% endblock %}
