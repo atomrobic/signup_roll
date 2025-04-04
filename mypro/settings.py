@@ -84,18 +84,14 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # settings.py
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL database engine
-        'NAME': 'myhosp',  # Database name
-        'USER': 'postgres',  # Username
-        'PASSWORD': 'akhil',  # Password
-        'HOST': 'localhost',  # Database host
-        'PORT': '5432',  # Database port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-AUTH_USER_MODEL = 'myapp.Profile'
+
+AUTH_USER_MODEL = 'myapp.profile'
 
 
 # Password validation

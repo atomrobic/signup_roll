@@ -1,5 +1,12 @@
+import random
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.conf import settings
+
+
+
 
 # Custom User Manager
 class CustomUserManager(BaseUserManager):
@@ -58,27 +65,45 @@ class Profile(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.get_user_type_display()})"
-
+    
 # Nurse model
 class Nurse(models.Model):
-    user = models.OneToOneField('myapp.Profile', on_delete=models.CASCADE, related_name='nurse')
+    user = models.OneToOneField('myapp.profile', on_delete=models.CASCADE, related_name='nurse')
     phone_number = models.CharField(max_length=15)
     shift = models.CharField(max_length=50, help_text="Shift timing (e.g., Morning, Evening, Night)")
 
     def __str__(self):
         return f"Nurse: {self.user.first_name} {self.user.last_name} ({self.shift})"
+    
+def generate_doctor_number():
+    count = Doctor.objects.count() + 1
+    return f"DOC{count:04d}2025"
 
 # Doctor model
 class Doctor(models.Model):
-    user = models.OneToOneField('myapp.Profile', on_delete=models.CASCADE, related_name='doctor')
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    user = models.OneToOneField('myapp.profile', on_delete=models.CASCADE, related_name='doctor')
     phone_number = models.CharField(max_length=15)
-    specification = models.TextField()
+    specialization = models.TextField()
     experience = models.PositiveIntegerField(help_text="Number of years of experience")
     certificate_files = models.FileField(upload_to='certificates/', blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     is_approved = models.BooleanField(default=False)
+    doctor_number = models.CharField(max_length=20, unique=True, editable=False)
 
     def __str__(self):
-        return f"Doctor: {self.user.first_name} {self.user.last_name}"
+        return f"Doctor: {self.user.first_name} {self.user.last_name} ({self.status})"
+
+    
+    def save(self, *args, **kwargs):
+        if not self.doctor_number:
+            self.doctor_number = generate_doctor_number()
+        super().save(*args, **kwargs)
 
 # Function to generate admission number for the Patient model
 def generate_admission_number():
@@ -87,7 +112,7 @@ def generate_admission_number():
 
 # Patient model
 class Patient(models.Model):
-    user = models.OneToOneField('myapp.Profile', on_delete=models.CASCADE, related_name='patient')
+    user = models.OneToOneField('myapp.profile', on_delete=models.CASCADE, related_name='patient')
     phone_number = models.CharField(max_length=15, unique=True)
     admission_number = models.CharField(max_length=20, unique=True, editable=False)
 
@@ -98,3 +123,5 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"Patient: {self.user.first_name} {self.user.last_name} ({self.phone_number}, {self.admission_number})"
+    
+    

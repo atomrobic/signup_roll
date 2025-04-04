@@ -21,16 +21,16 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('signup/',views.signup,name = 'signup'),
-    path('login/',views.user_login,name = 'login'),
-    path('approve_doctors/',views.doctor_applications,name='approve_doctors'),
-    path('doctor-applications/download/<int:application_id>/', views.doctor_applications, {'action': 'download'}, name='download_certificate'),
-    path('update-status/<int:application_id>/<str:status>/', views.update_status, name='update_status'),
+    # path('login/',views.user_login,name = 'login'),
+    # path('approve_doctors/',views.doctor_applications,name='approve_doctors'),
+    # path('doctor-applications/download/<int:application_id>/', views.doctor_applications, {'action': 'download'}, name='download_certificate'),
+    # path('update-status/<int:application_id>/<str:status>/', views.update_status, name='update_status'),
     # path('deactivate-doctor/<int:doctor_id>/', views.remove_doctor_application, name='deactivate_doctor'),
-    path('doctors_view', views.docters_views,name="doctors_view"),
-    path('deactivate-doctor/<int:application_id>/', views.deactivate_doctor, name='deactivate_doctor'),
-    path('doctor-applications/', views.doctor_applications, name='approve_doctors'),
+    # path('doctors_view', views.docters_views,name="doctors_view"),
+    # path('deactivate-doctor/<int:application_id>/', views.deactivate_doctor, name='deactivate_doctor'),
+    # path('doctor-applications/', views.doctor_applications, name='approve_doctors'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
